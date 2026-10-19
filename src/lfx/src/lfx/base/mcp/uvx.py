@@ -10,6 +10,7 @@ at import. Injecting the constraint as ``--with`` keeps the resolve on a compati
 # ``~=1.28`` is PEP 440 for ">=1.28, <2.0" and, unlike ``mcp<2.0.0``, contains no character
 # that the stdio command policy rejects as a shell metacharacter.
 DEFAULT_MCP_SDK_CONSTRAINT = "mcp~=1.28"
+DEFAULT_MCP_PROXY_CONSTRAINT = "mcp-proxy==0.8.2"
 
 
 def mcp_sdk_constraint_args() -> list[str]:
@@ -25,7 +26,7 @@ def mcp_sdk_constraint_args() -> list[str]:
     constraint = _configured_constraint()
     if not constraint:
         return []
-    return ["--with", constraint]
+    return ["--with", constraint, "--with", DEFAULT_MCP_PROXY_CONSTRAINT]
 
 
 def _configured_constraint() -> str:
@@ -37,4 +38,15 @@ def _configured_constraint() -> str:
         return DEFAULT_MCP_SDK_CONSTRAINT
     if not isinstance(value, str):
         return DEFAULT_MCP_SDK_CONSTRAINT
+    return value.strip()
+
+def _configured_proxy_constraint() -> str:
+    from lfx.services.deps import get_settings_service
+
+    try:
+        value = getattr(get_settings_service().settings, "mcp_proxy_constraint", DEFAULT_MCP_PROXY_CONSTRAINT)
+    except Exception:  # noqa: BLE001 - settings can be unavailable during early imports
+        return DEFAULT_MCP_PROXY_CONSTRAINT
+    if not isinstance(value, str):
+        return DEFAULT_MCP_PROXY_CONSTRAINT
     return value.strip()

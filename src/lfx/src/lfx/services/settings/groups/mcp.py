@@ -115,6 +115,14 @@ class McpSettings(BaseModel):
     adding ``mcp``. Set to an empty string to disable the injection once upstream
     supports the 2.x SDK. Env var: LANGFLOW_MCP_SDK_CONSTRAINT."""
 
+    mcp_proxy_constraint: str = "mcp-proxy~=0.8.2"
+    """Version constraint for mcp-proxy injected as ``uvx --with`` when Langflow launches
+    an MCP server through uvx.
+
+    Pins mcp-proxy to a release compatible with the mcp 1.x SDK. Set to an empty string
+    to disable the pin once upstream mcp-proxy supports the 2.x SDK.
+    Env var: LANGFLOW_MCP_PROXY_CONSTRAINT."""
+
     # A2A protocol
     a2a_enabled: bool = False
     """If set to True, Langflow serves spec-valid A2A agent cards at a per-flow
